@@ -1,0 +1,96 @@
+/* Most CSS injected is from Bootstrap and comes with pre-defined designs */
+/* CSS inserted here are for customizing those pre-defined designs further to suit your needs */
+
+.navbar{
+  border-bottom: 4px solid#ef0000;
+}
+.float-child {
+  width: responsive;
+  float: left;
+  padding: 2px;
+}  
+.left-float{
+  width: 25%;
+  position: relative;
+  overflow-y: scroll;
+  height: 83.5vh;
+  background-image: url("../assets/folders-opa5.png");
+  background-position: center;
+  background-size: 22vw;
+  background-repeat: no-repeat;
+}
+.right-float{
+  padding: 0%;
+  border-left: 4px solid #ef0000;
+  width: 75%;
+  position:relative;
+  overflow-y: scroll;
+  height: 83.5vh;
+}
+.prev-panel{
+  background-color: #F6EECE;
+}
+table {
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+.sorta {
+  cursor: pointer;
+}
+
+th, td {
+  text-align: left;
+  padding: 16px;
+}
+
+th{
+  background-color: #cf0f39;
+  color: #ffffff;
+}
+
+/* Differentiating the collor of every even row entry in the table of files */
+tr:nth-child(even) {
+  background-color: #f2f2f2
+}
+
+ul, #myUL {
+  list-style-type: none;
+}
+
+/* Remove margins and padding from the parent ul */
+#myUL {
+  margin: 0;
+  padding: 0;
+}
+
+/* Style the caret/arrow */
+.caret {
+  cursor: pointer;
+  user-select: none; /* Prevent text selection */
+}
+
+/* Create the caret/arrow with a unicode, and style it */
+.caret::before {
+  content: "\25B6";
+  color: black;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+/* Rotate the caret/arrow icon when clicked on (using JavaScript) */
+.caret-down::before {
+  transform: rotate(90deg);
+}
+
+/* Hide the nested list */
+.nested {
+  display: none;
+}
+
+/* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
+.active {
+  display: block;
+}
+
