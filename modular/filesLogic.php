@@ -1,4 +1,5 @@
 <?php
+    @session_start();
 // WARNING SO FAR MGA FIXED VALUES YUNG DIRECTORIES DITO SO LAHAT SA UPLOADS PA MUNA NALALAGAY
 
 // connect to the database
@@ -14,7 +15,7 @@
         $filename = $_FILES['myfile']['name'];
 
         // destination of the file on the server
-        $journey = 'uploads';
+        $journey = $_SESSION['dirt'];
         $destination = $journey. '/' . $filename;
 
         // get the file extension
@@ -25,20 +26,34 @@
         $size = $_FILES['myfile']['size'];
         $dateup = date("Y-m-d");
 
+        $sqql = "SELECT * FROM files WHERE name='$fnamewoext' AND ftype='$extension' AND dirGroup='$journey'";
+        $check = mysqli_query($conn, $sqql);
+
         // Condition for allowing specific types of files to be uploaded
-        if (!in_array($extension, ['zip', 'pdf', 'docx'])) {
+        if (!in_array($extension, ['zip', 'pdf', 'docx', 'ppt', 'jpg', 'png', 'jpeg', 'xlsx'])) {
             echo "
                 <div class='alert alert-danger alert-dismissible fade show fixed-top' role='alert'>
-                    You file extension must be .zip, .pdf or .docx
+                    You file extension must be .zip, .pdf, .docx, .ppt, .jpg/jpeg, .png, or .xlsx.
                     <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'>
                         <span aria-hidden='true'>&times;</span>
                     </button>
                 </div>
             ";
-        } elseif ($_FILES['myfile']['size'] > 50000000) { // file shouldn't be larger than 50Megabyte
+        // file shouldn't be larger than 50Megabytes
+        } elseif ($_FILES['myfile']['size'] > 50000000) { 
             echo "
                 <div class='alert alert-danger alert-dismissible fade show fixed-top' role='alert'>
                     File too large!
+                    <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'>
+                        <span aria-hidden='true'>&times;</span>
+                    </button>
+                </div>
+            ";
+        // Condition for checking if the file already exists in the database.
+        } elseif (mysqli_num_rows($check) > 0) {
+            echo "
+                <div class='alert alert-danger alert-dismissible fade show fixed-top' role='alert'>
+                    File already exists in the database.
                     <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'>
                         <span aria-hidden='true'>&times;</span>
                     </button>
@@ -80,7 +95,7 @@
         $result = mysqli_query($conn, $sql);
 
         $file = mysqli_fetch_assoc($result);
-        $filepath = 'uploads/' . $file['name']. '.' . $file['ftype'];
+        $filepath = $_SESSION['dirt']. '/' . $file['name']. '.' . $file['ftype'];
 
         switch ($file['ftype']) 
         {
@@ -104,8 +119,8 @@
             header('Expires: 0');
             header('Cache-Control: must-revalidate');
             header('Pragma: public');
-            header('Content-Length: ' . filesize('uploads/' . $file['name']. '.' . $file['ftype']));
-            readfile('uploads/' . $file['name']. '.' . $file['ftype']);
+            header('Content-Length: ' . filesize($_SESSION['dirt']. '/' . $file['name']. '.' . $file['ftype']));
+            readfile($_SESSION['dirt']. '/' . $file['name']. '.' . $file['ftype']);
 
             // Now update downloads count
             $newCount = $file['downloads'] + 1;
@@ -119,7 +134,7 @@
         $dirName = $_POST["pname"];
 
         // check if file exists
-        if(file_exists("uploads/". $dirName)) {
+        if(file_exists($_SESSION['dirt'].'/'. $dirName)) {
             echo "
                 <div class='alert alert-danger alert-dismissible fade show fixed-top' role='alert'>
                     File already exists.
@@ -136,7 +151,7 @@
     }
 
     // Not yet working / will be improved upon
-    class Scan {
+    /*class Scan {
         public function scanner($db, $dir) {
             $files = scandir($dir);
             foreach ($files as $file) {
@@ -159,4 +174,4 @@
                 }
             }
         }
-    }
+    }*/

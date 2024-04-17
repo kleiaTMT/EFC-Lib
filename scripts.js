@@ -52,3 +52,13 @@ function sortTable(n) {
     }
   }
 }
+
+function getDirectory(clcked){
+  $.ajax({
+    url: "index.php",
+    type: "post",
+    data: {
+      dirct: clcked
+    }
+  })
+}
