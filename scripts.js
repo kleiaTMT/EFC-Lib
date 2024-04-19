@@ -53,12 +53,23 @@ function sortTable(n) {
   }
 }
 
-function getDirectory(clcked){
-  $.ajax({
-    url: "index.php",
-    type: "post",
-    data: {
-      dirct: clcked
-    }
-  })
-}
+$(document).ready(function() {
+  var currentDirect = "";
+  $("li").click(function() {
+    let selectID = $(this).attr('id');
+    currentDirect = "..\\" + selectID;
+    $("#conTent").load("./modular/conTent.php", {
+      newDirect : currentDirect
+    });
+  });
+});
+
+$(document).ready(function() {
+  var currentDirect = "";
+  $("img").click(function() {
+    currentDirect = "../uploads";
+    $("#conTent").load("./modular/conTent.php", {
+      newDirect : currentDirect
+    });
+  });
+});

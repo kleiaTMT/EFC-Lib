@@ -1,6 +1,7 @@
 <?php
   include './modular/filesLogic.php';
   @session_start();
+  $_SESSION['dirt'] = "uploads";
 ?>
 <!doctype html>
 <html lang="en">
@@ -18,14 +19,11 @@
     <script src="scripts.js"></script>
   </head>
   <body>
-    <?php
-      $_SESSION['dirt'] = "uploads";
-    ?>
     <!-- Navigator Bar (Top part of the website) -->
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #ffffff;">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <img src="assets/ECF.lib-logo.png" alt="EFC Library Logo" width="240" height="70">
+                <img id="uploads" src="assets/ECF.lib-logo.png" alt="EFC Library Logo" width="240" height="70">
             </a>
         </div>
     </nav>
@@ -92,8 +90,7 @@
           //return $counter ? sprintf('Scan finished: %d files processed', $counter ) : 'Scan completed: No new files added';
       }
       
-      $dir=$_SESSION["dirt"];
-      print insertToTable( $dir );
+      print insertToTable( $_SESSION['dirt'] );
       ?>
       <!-- Div for the left panel (list of folders and directories) -->
       <div class="float-child left-float bg-light">  
@@ -124,10 +121,9 @@
                   $dTPC = sizeof($dTP)-1;
                   $dTPath = $dTP[$dTPC];
 
-                  echo '<li onClick="getDirectory(this.id)" id="'.$dTPath.'"><span class="caret">' . $ff . '</span>';
+                  echo '<li id="'.$dirTestPath[$i].'"><span class="caret">' . $ff . '</span>';
                   echo '<ul class="nested">';
 
-                  echo $dTPath;
                   $i++;
                   //calls the function again when the file encountered is a directory/folder
                   listFolderFiles($dir . '/' . $ff);
@@ -137,8 +133,7 @@
               }
               echo '</ul>';
             }
-            $dirc= $_SESSION["dirt"];
-            print listFolderFiles($dirc);
+            print listFolderFiles($_SESSION['dirt']);
           ?>
         </ul>
         <script>
@@ -171,20 +166,23 @@
 
       <!-- Div for the right panel (list of files) -->
       <div class="float-child right-float prev-panel">
-
+        
         <!-- Table -->
-        <table id="myTable">
+        <table class="overflow" id="myTable">
 
           <!-- Table headers with sortable headers -->
           <thead class="sticky-top">
-              <th class="sorta" onclick="sortTable(0)">Name</th>
-              <th class="sorta" onclick="sortTable(1)">Date Uploaded</th>
-              <th class="sorta" onclick="sortTable(2)">Type</th>
-              <th>Size (in KB)</th>
-              <th>Downloads</th>
-              <th>Action</th>
+            <div class="url">
+              <input class="urlDirect" type="text" id="country" name="country" value="<?php echo "localhost". '\\' . $_SESSION['dirt']; ?>" readonly><br>
+            </div>
+            <th class="sorta" onclick="sortTable(0)">Name</th>
+            <th class="sorta" onclick="sortTable(1)">Date Uploaded</th>
+            <th class="sorta" onclick="sortTable(2)">Type</th>
+            <th>Size (in KB)</th>
+            <th>Downloads</th>
+            <th>Action</th>
           </thead>
-
+          
           <!-- Table body for list of files -->
           <tbody id="conTent">
             <?php 
@@ -218,8 +216,7 @@
                   }
                 }                
               }
-              $dirct = $_SESSION["dirt"];
-              print listTableContents($dirct);
+              print listTableContents($_SESSION['dirt']);
             ?>
           </tbody>
         </table>

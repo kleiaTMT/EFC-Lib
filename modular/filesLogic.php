@@ -134,7 +134,7 @@
         $dirName = $_POST["pname"];
 
         // check if file exists
-        if(file_exists($_SESSION['dirt'].'/'. $dirName)) {
+        if(file_exists($_SESSION['dirt'] . '/' . $dirName)) {
             echo "
                 <div class='alert alert-danger alert-dismissible fade show fixed-top' role='alert'>
                     File already exists.
@@ -146,7 +146,7 @@
         } 
         else { 
             // create folder
-            mkdir("./uploads/" . $dirName); // Creates a folder in this directory named whatever value returned by pname input
+            mkdir($_SESSION['dirt'] . '/' . $dirName); // Creates a folder in this directory named whatever value returned by pname input
         }
     }
 

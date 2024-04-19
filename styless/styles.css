@@ -23,15 +23,17 @@
   padding: 0%;
   border-left: 4px solid #ef0000;
   width: 75%;
-  position:relative;
   overflow-y: scroll;
+  position:relative;
   height: 83.5vh;
 }
+
 .prev-panel{
   background-color: #F6EECE;
 }
 table {
   border-spacing: 0;
+  overflow-y: scroll;
   width: 100%;
   border: 1px solid #ddd;
 }
@@ -40,9 +42,18 @@ table {
   cursor: pointer;
 }
 
+.url{
+  text-align: center;
+}
+.urlDirect {
+  width: 80%;
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+}
+
 th, td {
   text-align: left;
-  padding: 16px;
+  padding: 8px;
 }
 
 th{
