@@ -2,9 +2,7 @@
     include "filesLogic.php";
     @session_start();
 
-
-    $newDirect = $_POST['newDirect'];
-    $_SESSION['dirt'] = $newDirect;
+    $_SESSION['dirt'] = $_POST['newDirect'];
     // Function for listing files from database
     function listTableContents($dire){
         global $conn;
@@ -21,11 +19,13 @@
         foreach($scanf as $file){
 
             $inamewoext = pathinfo($file, PATHINFO_FILENAME);
+            $seql = "SELECT * FROM files WHERE name=? and dirGroup=?";
+            $stmt = $conn->prepare($seql);
+            $stmt->bind_param("ss", $inamewoext, $dTPath);
+            $stmt->execute();
+            $resi = $stmt->get_result();
 
-            $seql = "SELECT * FROM files WHERE name='$inamewoext' and dirGroup='$dTPath'";
-            $resi = mysqli_query($conn, $seql);
-
-            while($row = mysqli_fetch_assoc($resi)) {  
+            while ($row = $resi->fetch_assoc()) {  
                 echo "
                     <tr>
                         <td><b>".$row['name']."</b></td>

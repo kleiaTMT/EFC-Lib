@@ -56,6 +56,7 @@ function sortTable(n) {
 $(document).ready(function() {
   var currentDirect = "";
   $("li").click(function() {
+    $('#conTent').hide().css("visibility", "hidden");
     let selectID = $(this).attr('id');
     currentDirect = "..\\" + selectID;
     $("#conTent").load("./modular/conTent.php", {
@@ -67,7 +68,8 @@ $(document).ready(function() {
 $(document).ready(function() {
   var currentDirect = "";
   $("img").click(function() {
-    currentDirect = "../uploads";
+    $('#conTent').hide();
+    currentDirect = "..\\uploads";
     $("#conTent").load("./modular/conTent.php", {
       newDirect : currentDirect
     });

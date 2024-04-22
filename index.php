@@ -22,7 +22,7 @@
     <!-- Navigator Bar (Top part of the website) -->
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #ffffff;">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand">
                 <img id="uploads" src="assets/ECF.lib-logo.png" alt="EFC Library Logo" width="240" height="70">
             </a>
         </div>
@@ -196,13 +196,15 @@
                 unset($scanf[array_search('..', $scanf, true)]);
 
                 foreach($scanf as $file){
-
                   $inamewoext = pathinfo($file, PATHINFO_FILENAME);
+                  
+                  $seql = "SELECT * FROM files WHERE name=? and dirGroup=?";
+                  $stmt = $conn->prepare($seql);
+                  $stmt->bind_param("ss", $inamewoext, $dire);
+                  $stmt->execute();
+                  $resi = $stmt->get_result();
 
-                  $seql = "SELECT * FROM files WHERE name='$inamewoext' and dirGroup='$dire'";
-                  $resi = mysqli_query($conn, $seql);
-
-                  while($row = mysqli_fetch_assoc($resi)) {  
+                  while ($row = $resi->fetch_assoc()) {  
                     echo "
                       <tr>
                         <td><b>".$row['name']."</b></td>

@@ -91,10 +91,13 @@
         $id = $_GET['file_id'];
 
         // fetch file to download from database
-        $sql = "SELECT * FROM files WHERE filID=$id";
-        $result = mysqli_query($conn, $sql);
-
-        $file = mysqli_fetch_assoc($result);
+        $sql = "SELECT * FROM files WHERE filID=?";
+        $stat = $conn->prepare($sql);
+        $stat->bind_param("i", $id);
+        $stat->execute();
+        $result = $stat->get_result();
+        $file = $result->fetch_assoc();
+        
         $filepath = $_SESSION['dirt']. '/' . $file['name']. '.' . $file['ftype'];
 
         switch ($file['ftype']) 
@@ -124,8 +127,12 @@
 
             // Now update downloads count
             $newCount = $file['downloads'] + 1;
-            $updateQuery = "UPDATE files SET downloads=$newCount WHERE filID=$id";
-            mysqli_query($conn, $updateQuery);
+           
+            $updateQuery = "UPDATE files SET downloads=? WHERE filID=?";
+            $upQ = $conn->prepare($updateQuery);
+            $upQ->bind_param("ii", $newCount, $id);
+            $upQ->execute();
+
             exit;
         }
     }
@@ -149,29 +156,3 @@
             mkdir($_SESSION['dirt'] . '/' . $dirName); // Creates a folder in this directory named whatever value returned by pname input
         }
     }
-
-    // Not yet working / will be improved upon
-    /*class Scan {
-        public function scanner($db, $dir) {
-            $files = scandir($dir);
-            foreach ($files as $file) {
-                if (!in_array($file, ['.', '..'])) {
-                    $name = $dir . '/' . $file;
-                    $type = pathinfo($name, PATHINFO_EXTENSION);
-                    $fname = pathinfo($name, PATHINFO_FILENAME);
-                    $types = filetype($name);
-                    $size = (is_dir($name)) ? -1 : filesize($name);
-                    $dateup = date("Y-m-d");
-                    $db->query(
-                        "INSERT INTO files ('path', 'size', 'dateup', 'ftype', 'dirGroup')
-                        VALUES (?s, ?i, ?s, ?s, ?s)
-                        ", $fname, $size, $dateup, $type, $dir
-                    );
-
-                    if ($types == 'dir') {
-                        $this->scanner($db, $name);
-                    }
-                }
-            }
-        }
-    }*/

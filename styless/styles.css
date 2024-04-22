@@ -62,7 +62,7 @@ th{
 }
 
 /* Differentiating the collor of every even row entry in the table of files */
-tr:nth-child(even) {
+tr:nth-child(odd) {
   background-color: #f2f2f2
 }
 
@@ -80,6 +80,10 @@ ul, #myUL {
 .caret {
   cursor: pointer;
   user-select: none; /* Prevent text selection */
+}
+
+.navbar img{
+  cursor: pointer;
 }
 
 /* Create the caret/arrow with a unicode, and style it */
