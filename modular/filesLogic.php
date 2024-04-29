@@ -140,6 +140,9 @@
     if(isset($_POST["pname"])){
         $dirName = $_POST["pname"];
 
+        $nope = "/";
+        $nope2 = "\\";
+
         // check if file exists
         if(file_exists($_SESSION['dirt'] . '/' . $dirName)) {
             echo "
@@ -151,8 +154,30 @@
                 </div>
             ";
         } 
+        elseif(strpos($dirName, $nope) !== FALSE) {
+            echo "
+                <div class='alert alert-danger alert-dismissible fade show fixed-top' role='alert'>
+                    Invalid folder name format!
+                    <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'>
+                        <span aria-hidden='true'>&times;</span>
+                    </button>
+                </div>
+            ";
+        }
+        elseif(strpos($dirName, $nope2) !== FALSE) {
+            echo "
+                <div class='alert alert-danger alert-dismissible fade show fixed-top' role='alert'>
+                    Invalid folder name format!
+                    <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'>
+                        <span aria-hidden='true'>&times;</span>
+                    </button>
+                </div>
+            ";
+        }
         else { 
             // create folder
             mkdir($_SESSION['dirt'] . '/' . $dirName); // Creates a folder in this directory named whatever value returned by pname input
         }
     }
+
+    

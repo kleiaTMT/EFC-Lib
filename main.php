@@ -12,9 +12,10 @@
 
     <!-- Bootstrap CSS -->
     
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="./styless/styles.css">
-    <title>1st Test</title>
+    <title>EFC Library</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="scripts.js"></script>
   </head>
@@ -157,7 +158,7 @@
         </form>
 
         <!-- Uploading a file in the database and the pc system // Connects to filesLogic.php when the button is clicked -->
-        <form action="index.php" method="post" enctype="multipart/form-data" >
+        <form action="main.php" method="post" enctype="multipart/form-data" >
           <h3>Upload File</h3>
           <input type="file" name="myfile"> <br>
           <button class="btn btn-primary" type="submit" name="save">UPLOAD</button>
@@ -212,7 +213,7 @@
                         <td>".$row['ftype']."</td>
                         <td>".floor($row['size'] / 1000) . ' KB'."</td>
                         <td>".$row['downloads']."</td>
-                        <td><a href='index.php?file_id=".$row['filID']."'>Download</a></td>
+                        <td><a href='main.php?file_id=".$row['filID']."'>Download</a></td>
                       </tr>
                     ";
                   }

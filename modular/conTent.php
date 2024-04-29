@@ -33,7 +33,7 @@
                         <td>".$row['ftype']."</td>
                         <td>".floor($row['size'] / 1000) . ' KB'."</td>
                         <td>".$row['downloads']."</td>
-                        <td><a href='index.php?file_id=".$row['filID']."'>Download</a></td>
+                        <td><a href='main.php?file_id=".$row['filID']."'>Download</a></td>
                     </tr>
                 ";
             }

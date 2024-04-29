@@ -56,7 +56,6 @@ function sortTable(n) {
 $(document).ready(function() {
   var currentDirect = "";
   $("li").click(function() {
-    $('#conTent').hide().css("visibility", "hidden");
     let selectID = $(this).attr('id');
     currentDirect = "..\\" + selectID;
     $("#conTent").load("./modular/conTent.php", {
@@ -67,11 +66,46 @@ $(document).ready(function() {
 
 $(document).ready(function() {
   var currentDirect = "";
-  $("img").click(function() {
-    $('#conTent').hide();
-    currentDirect = "..\\uploads";
+  $("#uploads").click(function() {
+    currentDirect = "../uploads";
     $("#conTent").load("./modular/conTent.php", {
       newDirect : currentDirect
+    });
+  });
+});
+
+$(document).ready(function() {
+  $("#Dashboard").click(function() {
+    let selID = $(this).attr('id');
+    $("#replaceThis").load(".modular/dasbord.php", {
+      newDis : selID
+    });
+  });
+});
+
+$(document).ready(function() {
+  $("#ManUse").click(function() {
+    let selID = $(this).attr('id');
+    $("#replaceThis").load(".modular/manuser.php", {
+      newDis : selID
+    });
+  });
+});
+
+$(document).ready(function() {
+  $("#ManFile").click(function() {
+    let selID = $(this).attr('id');
+    $("#replaceThis").load(".modular/manfile.php", {
+      newDis : selID
+    });
+  });
+});
+
+$(document).ready(function() {
+  $("#FfApprove").click(function() {
+    let selID = $(this).attr('id');
+    $("#replaceThis").load(".modular/forapprove.php", {
+      newDis : selID
     });
   });
 });
