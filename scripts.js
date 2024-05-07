@@ -55,7 +55,7 @@ function sortTable(n) {
 
 $(document).ready(function() {
   var currentDirect = "";
-  $("li").click(function() {
+  $("#myUL li").click(function() {
     let selectID = $(this).attr('id');
     currentDirect = "..\\" + selectID;
     $("#conTent").load("./modular/conTent.php", {
@@ -74,38 +74,17 @@ $(document).ready(function() {
   });
 });
 
-$(document).ready(function() {
-  $("#Dashboard").click(function() {
-    let selID = $(this).attr('id');
-    $("#replaceThis").load(".modular/dasbord.php", {
-      newDis : selID
-    });
-  });
-});
+$(function() {
 
-$(document).ready(function() {
-  $("#ManUse").click(function() {
-    let selID = $(this).attr('id');
-    $("#replaceThis").load(".modular/manuser.php", {
+  function loadPage(id) {
+    let selID = typeof id === "string" ? id : $(this).attr('id'); // if passed an ID use it
+    console.log(selID);
+    $("#replaceThis").load(".modular/replaceThis.php", {
       newDis : selID
     });
-  });
-});
+  }
 
-$(document).ready(function() {
-  $("#ManFile").click(function() {
-    let selID = $(this).attr('id');
-    $("#replaceThis").load(".modular/manfile.php", {
-      newDis : selID
-    });
-  });
-});
-
-$(document).ready(function() {
-  $("#FfApprove").click(function() {
-    let selID = $(this).attr('id');
-    $("#replaceThis").load(".modular/forapprove.php", {
-      newDis : selID
-    });
-  });
+  const $nav = $("#left-container")
+    .on("click", 'img', loadPage); // any click on an image
+  loadPage($nav.find('img').eq(0).prop('id')); // initialise
 });

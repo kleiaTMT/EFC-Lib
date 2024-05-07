@@ -1,7 +1,10 @@
 <?php
   include './modular/filesLogic.php';
-  @session_start();
+  include './modular/logreq.php';
   $_SESSION['dirt'] = "uploads";
+  if(empty($_SESSION['uid'])){
+    header("Location: ./modular/login.php");
+  }
 ?>
 <!doctype html>
 <html lang="en">
@@ -24,9 +27,25 @@
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #ffffff;">
         <div class="container-fluid">
             <a class="navbar-brand">
-                <img id="uploads" src="assets/ECF.lib-logo.png" alt="EFC Library Logo" width="240" height="70">
+              <img id="uploads" src="assets/ECF.lib-logo.png" alt="EFC Library Logo" width="240" height="70">
             </a>
         </div>
+        <div class="btn-group">
+          <button type="button" class="btn btn-danger">Action</button>
+          <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="visually-hidden">Toggle Dropdown</span>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Action</a></li>
+            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Separated link</a></li>
+          </ul>
+        </div>
+        <form action="./modular/logreq.php" method="POST">
+          <button class='sign-out me-2' type='submit' value='logout' name='logout'>SIGN OUT</button>
+        </form>
     </nav>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <div class="float-container">

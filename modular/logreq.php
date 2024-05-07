@@ -1,49 +1,52 @@
 <?php
-    include"filesLogic.php";
+    include "filesLogic.php";
 
-    $uname = $_POST['uname'];
-    $emailAddr = $_POST['emailAddr'];
-    $passw = $_POST['passw'];
+    $uname = '';
+    $emailAddr = '';
+    $passw = '';
     $enc = "EFC";
-    $passw_enc = sha1($passw.$enc);
+    
     
     if(isset($_POST["login"])) {
-        $logQuery = "SELECT count(*) FROM users WHERE emailAddr=? and passw=?";
+
+        $emailAddr = $_POST['emailAddr'];
+        $passw = $_POST['passw'];
+        $passw_enc = sha1($passw.$enc);
+
+        $logQuery = "SELECT * FROM users WHERE emailAddr=? and passw=?";
         $lQ = $conn->prepare($logQuery);
         $lQ->bind_param("ss", $emailAddr, $passw_enc);
         $lQ->execute();
-        $lQres = $lq->get_result();
+        $lQres = $lQ->get_result();
 
-        while ($row = $resi->fetch_assoc()) {
+        while ($row = $lQres->fetch_assoc()) {
             if($row['emailAddr'] == $emailAddr && $row['passw'] == $passw_enc) {
                 $_SESSION['emailAddr'] = $row['emailAddr'];
                 $_SESSION['passw'] = $row['passw'];
-                $_SESSION['usrID'] = $row['uid'];
+                $_SESSION['uid'] = $row['uid'];
                 $_SESSION['uname'] = $row['uname'];
-                $_SESSION['utype'] = $row['utype']; 
+                $_SESSION['utype'] = $row['usertype'];
                 header("Location: ../main.php");
-                echo "
-                    <div class='alert alert-success alert-dismissible fade show fixed-top' role='alert'>
-                        Logged in successfully!
-                        <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'>
-                            <span aria-hidden='true'>&times;</span>
-                        </button>
-                    </div>
-                ";
                 exit();
                 
             } else { 
-                header("Location: ../main.php?error=Incorrect Email and password");
+                header("Location: ./login.php?error=Incorrect Email or Password");
+                exit();
             }
         }
     }
 
     if(isset($_POST["signup"])) {
+        $emailAddr = $_POST['emailAddr'];
+        $passw = $_POST['passw'];
+        $passw_enc = sha1($passw.$enc);
+
         $regQueryCheck = "SELECT count(*) FROM users WHERE emailAddr=?";
         $rQC = $conn->prepare($regQueryCheck);
         $rQC->bind_param("", $emailAddr);
         $rQC->execute();
         $rQCres = $rQC->get_result();
+
         if ($rQCres->num_rows > 0) {
             echo "
                 <div class='alert alert-danger alert-dismissible fade show fixed-top' role='alert'>
@@ -68,4 +71,10 @@
                 </div>
             ";
         }
+    }
+
+    if(isset($_POST['logout'])) {
+        session_unset();
+        session_destroy();
+        header('Location: ./login.php');
     }
