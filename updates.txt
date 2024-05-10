@@ -2,3 +2,9 @@
 Finished signout feature
 Added login feature
 Added manage users and files page (incomplete)
+
+05-10-2024
+Finished manage users and files page
+Finished panel switching in admin page
+Added auto-updating search feature in manage files and main page files
+REMOVED directory location

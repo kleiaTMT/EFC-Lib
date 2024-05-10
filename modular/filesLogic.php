@@ -100,8 +100,7 @@
         
         $filepath = $_SESSION['dirt']. '/' . $file['name']. '.' . $file['ftype'];
 
-        switch ($file['ftype']) 
-        {
+        switch ($file['ftype']) {
             case "pdf": $ctype="application/pdf"; break;
             case "exe": $ctype="application/octet-stream"; break;
             case "zip": $ctype="application/zip"; break;
@@ -179,5 +178,3 @@
             mkdir($_SESSION['dirt'] . '/' . $dirName); // Creates a folder in this directory named whatever value returned by pname input
         }
     }
-
-    

@@ -1,13 +1,16 @@
 <?php 
-    require_once "filesLogic.php";
+    require_once "./modular/filesLogic.php";
     @session_start();
 
     $_SESSION['emailAddr'] = '';
     $_SESSION['passw'] = '';
-    $_SESSION['uID'] = '';
+    $_SESSION['uid'] = '';
     $_SESSION['uname'] = '';
     $_SESSION['utype'] = '';
     
+    if($_SESSION['uid'] != '') {
+        header("Location: ./main.php");
+    }
 
 ?>
 <!doctype html>
@@ -57,8 +60,8 @@
     </head>
     <body id="loginPage">
         <div id="loginCard">
-            <form action="logreq.php" method="POST">
-                <img src="../assets/efc-short.png" width="209" height="150">
+            <form action="./modular/logreq.php" method="POST">
+                <img src="./assets/efc-short.png" width="209" height="150">
                 <input type="email" id="emailAddr" name="emailAddr" placeholder="Email Address...">
                 <input type="password" id="passw" name="passw" placeholder="Password..."> <br/>
                 <button type="submit" name="login">

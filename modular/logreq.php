@@ -26,11 +26,33 @@
                 $_SESSION['uid'] = $row['uid'];
                 $_SESSION['uname'] = $row['uname'];
                 $_SESSION['utype'] = $row['usertype'];
+                $vuid = $_SESSION['uid'];
+                $vdate = date("Y-m-d");
+
+                //checks if the user already has a record of logging in today in the system
+                $loQueCheck = 'SELECT * FROM visits WHERE uid=? and lastvisit=?';
+                $lQCc = $conn->prepare($loQueCheck);
+                $lQCc->bind_param('is', $vuid, $vdate);
+                $lQCc->execute();
+                $lQCcres = $lQCc->get_result();
+
+                //if no record, proceed to record the latest date entry to "visits" table and "lastdate" element in users entry
+                if ($lQCcres->num_rows == 0){
+                    $loQue = 'INSERT INTO visits (uid, lastvisit) VALUES (?, ?)';
+                    $lQuCc = $conn->prepare($loQue);
+                    $lQuCc->bind_param('is', $vuid, $vdate);
+                    $lQuCc->execute();
+
+                    $uQue = 'UPDATE users SET lastdate = ? WHERE uid = ?';
+                    $uQueC = $conn->prepare($uQue);
+                    $uQueC->bind_param('si', $vdate, $vuid);
+                    $uQueC->execute();
+                }
                 header("Location: ../main.php");
                 exit();
                 
             } else { 
-                header("Location: ./login.php?error=Incorrect Email or Password");
+                header("Location: ../index.php?error=Incorrect Email or Password");
                 exit();
             }
         }
@@ -76,5 +98,5 @@
     if(isset($_POST['logout'])) {
         session_unset();
         session_destroy();
-        header('Location: ./login.php');
+        header('Location: ../index.php');
     }

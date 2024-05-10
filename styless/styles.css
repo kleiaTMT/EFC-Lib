@@ -3,6 +3,7 @@
 
 .navbar{
   border-bottom: 4px solid#ef0000;
+  z-index: 5;
 }
 .float-child {
   width: responsive;
@@ -10,22 +11,21 @@
   padding: 2px;
 }  
 .left-float{
-  width: 25%;
+  width: 20%;
   position: relative;
-  overflow-y: scroll;
-  height: 83.5vh;
+  height: 88vh;
   background-image: url("../assets/folders-opa5.png");
   background-position: center;
-  background-size: 22vw;
+  background-size: 15vw;
   background-repeat: no-repeat;
 }
 .right-float{
   padding: 0%;
   border-left: 4px solid #ef0000;
-  width: 75%;
-  overflow-y: scroll;
-  position:relative;
-  height: 83.5vh;
+  width: 80%;
+  overflow-y: auto;
+  position: relative;
+  height: 88vh;
 }
 
 .prev-panel{
@@ -116,4 +116,12 @@ ul, #myUL {
 /* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
 .active {
   display: block;
+}
+
+.modal-backdrop {
+  z-index: 51;
+}
+
+.modal-dialog {
+  z-index: 52;
 }
