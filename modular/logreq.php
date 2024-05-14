@@ -13,6 +13,7 @@
         $passw = $_POST['passw'];
         $passw_enc = sha1($passw.$enc);
 
+        //query for checking if the input records are in the system
         $logQuery = "SELECT * FROM users WHERE emailAddr=? and passw=?";
         $lQ = $conn->prepare($logQuery);
         $lQ->bind_param("ss", $emailAddr, $passw_enc);
@@ -20,16 +21,19 @@
         $lQres = $lQ->get_result();
 
         while ($row = $lQres->fetch_assoc()) {
+
+            //checks if the input is inside the system
             if($row['emailAddr'] == $emailAddr && $row['passw'] == $passw_enc) {
                 $_SESSION['emailAddr'] = $row['emailAddr'];
                 $_SESSION['passw'] = $row['passw'];
                 $_SESSION['uid'] = $row['uid'];
+                $_SESSION['company'] = $row['company'];
                 $_SESSION['uname'] = $row['uname'];
                 $_SESSION['utype'] = $row['usertype'];
                 $vuid = $_SESSION['uid'];
                 $vdate = date("Y-m-d");
 
-                //checks if the user already has a record of logging in today in the system
+                //query for checking if the user already has a record of logging in today in the system
                 $loQueCheck = 'SELECT * FROM visits WHERE uid=? and lastvisit=?';
                 $lQCc = $conn->prepare($loQueCheck);
                 $lQCc->bind_param('is', $vuid, $vdate);
@@ -60,12 +64,15 @@
 
     if(isset($_POST["signup"])) {
         $emailAddr = $_POST['emailAddr'];
+        $uname = $_POST['uname'];
         $passw = $_POST['passw'];
+        $comp = $_POST['company'];
         $passw_enc = sha1($passw.$enc);
+        $cdate = date("Y-m-d");
 
-        $regQueryCheck = "SELECT count(*) FROM users WHERE emailAddr=?";
+        $regQueryCheck = "SELECT * FROM users WHERE emailAddr=?";
         $rQC = $conn->prepare($regQueryCheck);
-        $rQC->bind_param("", $emailAddr);
+        $rQC->bind_param("s", $emailAddr);
         $rQC->execute();
         $rQCres = $rQC->get_result();
 
@@ -78,12 +85,14 @@
                     </button>
                 </div>
             ";
+            echo $emailAddr;
         } else {
-            $rQuery = "INSERT INTO users (uname, emailAddr, passw, utype) VALUES ?, ?, ?, 0";
+            $rQuery = "INSERT INTO users (uname, emailAddr, passw, company, datecreate, usertype) VALUES (?, ?, ?, ?, ?, 0)";
             $rQ = $conn->prepare($rQuery);
-            $rQ->bind_param("sss", $uname, $emailAddr, $passw_enc);
+            $rQ->bind_param("sssss", $uname, $emailAddr, $passw_enc, $comp, $cdate);
             $rQ->execute();
 
+            header("Location: ../admin.php");
             echo "
                 <div class='alert alert-success alert-dismissible fade show fixed-top' role='alert'>
                     Account added successfully!

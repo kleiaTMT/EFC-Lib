@@ -8,3 +8,11 @@ Finished manage users and files page
 Finished panel switching in admin page
 Added auto-updating search feature in manage files and main page files
 REMOVED directory location
+
+05-13-2024
+Finished the manage users search feature
+Finished the register user modal
+Finished the navbar options
+Added date created to be recorded in user database
+Added company selection on register user and display on manage user
+Edited output of "Last Visit" 

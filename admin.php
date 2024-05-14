@@ -2,7 +2,10 @@
     include "./modular/filesLogic.php";
     @session_start();
 
-    $_SESSION['admain'] = 'ManFile';
+    if(empty($_SESSION['admain'])) {
+        $_SESSION['admain'] = 'Dashboard';
+    }
+
     if($_SESSION['utype'] != "2"){
         header("Location: ./main.php?error=UNAUTHORIZED_ACCESS");
     }
@@ -20,8 +23,8 @@
     </head>
     <style>
         .left-container{
-            z-index: -1;
             float: left;
+            z-index: -1;
             width: 5%;
             height: 88vh;
             position: relative;
@@ -36,6 +39,12 @@
             position: relative;
             border-left: 4px solid #ef0000;
             overflow-y: auto;
+        }
+        .modal{
+            z-index: 50000;
+        }
+        .navbar{
+            z-index: 4;
         }
         .left-container img {
             width: 2vw;
@@ -58,7 +67,7 @@
         })
     </script>
     <body>
-        <?php include_once './modular/navbar.php'; ?>
+        <?php include './modular/navbar.php'; ?>
         <div class="main-container" id="myLogos">
             <div class="left-container bg-light" id="left-container">
                 <img src="./assets/dashboard.png" id="Dashboard" alt="Dashboard">
@@ -66,7 +75,7 @@
                 <img src="./assets/files.png" id="ManFile" alt="Manage Files">
                 <img src="./assets/approval.png" id="FfApprove" alt="Files for Approval">
             </div>
-            <div class="right-container prev-panel fixed-top" id="replaceThis">
+            <div class="right-container prev-panel" id="replaceThis">
                <?php 
                     include './modular/replaceThis.php';
                 ?>
