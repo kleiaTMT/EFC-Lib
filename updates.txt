@@ -16,3 +16,26 @@ Finished the navbar options
 Added date created to be recorded in user database
 Added company selection on register user and display on manage user
 Edited output of "Last Visit" 
+
+05-22-2024
+Finished dashboard display 
+Converted overflow scroll to server-side pagination
+Added line graph of total unique visits made
+Started development of forapproval tab
+
+Update 05-27-2024
+The system can do:
+Login
+Download
+display all types of folders added into the system
+Navigate different folders
+Realtime filter through the search bar
+Upload files for approval
+Divide contents of files/users into pages
+Display edit user and files forms (not yet tied to backend for process of editing)
+Approve or decline upload requests
+Register users
+Encode user passwords using sha1() function
+Display dashboard with total users, files, downloads, and pending requests
+line graph of total website vists (needs fixing)
+Logout

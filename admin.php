@@ -64,7 +64,7 @@
                     newDis : seleID
                 });
             });
-        })
+        });
     </script>
     <body>
         <?php include './modular/navbar.php'; ?>

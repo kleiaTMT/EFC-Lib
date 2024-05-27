@@ -39,9 +39,9 @@ $(document).ready(function() {
   var currentDirect = "";
   $("#myUL li").click(function() {
     let selectID = $(this).attr('id');
-    currentDirect = "..\\" + selectID;
+    currentDirect = selectID;
     console.log(currentDirect);
-    $("#myTable2").load("./modular/conTent.php", {
+    $("#repla").load("./modular/conTent.php", {
       newDirect : currentDirect
     });
   });

@@ -24,6 +24,7 @@
         // the physical file on a temporary uploads directory on the server
         $file = $_FILES['myfile']['tmp_name'];
         $size = $_FILES['myfile']['size'];
+        $uploader = $_SESSION['uname'];
         $dateup = date("Y-m-d");
 
         $sqql = "SELECT * FROM files WHERE name='$fnamewoext' AND ftype='$extension' AND dirGroup='$journey'";
@@ -62,7 +63,12 @@
         } else {
             // move the uploaded (temporary) file to the specified destination
             if (move_uploaded_file($file, $destination)) {
-                $sql = "INSERT INTO files (name, ftype, dateup, size, downloads, dirGroup) VALUES ('$fnamewoext', '$extension', '$dateup', $size, 0, '$journey')";
+                if ($_SESSION['utype'] > 0) {
+                    $sql = "INSERT INTO files (name, ftype, uname, dateup, size, downloads, dirGroup, state) VALUES ('$fnamewoext', '$extension', '$uploader', '$dateup', $size, 0, '$journey', 1)";
+                } else {
+                    $sql = "INSERT INTO files (name, ftype, uname, dateup, size, downloads, dirGroup, state) VALUES ('$fnamewoext', '$extension', '$uploader', '$dateup', $size, 0, '$journey', 0)";
+                }
+
                 if (mysqli_query($conn, $sql)) {
                     echo "
                         <div class='alert alert-success alert-dismissible fade show fixed-top' role='alert'>
@@ -98,7 +104,7 @@
         $result = $stat->get_result();
         $file = $result->fetch_assoc();
         
-        $filepath = $_SESSION['dirt']. '/' . $file['name']. '.' . $file['ftype'];
+        $filepath = $_SESSION['dirt']. '\\' . $file['name']. '.' . $file['ftype'];
 
         switch ($file['ftype']) {
             case "pdf": $ctype="application/pdf"; break;
@@ -121,8 +127,8 @@
             header('Expires: 0');
             header('Cache-Control: must-revalidate');
             header('Pragma: public');
-            header('Content-Length: ' . filesize($_SESSION['dirt']. '/' . $file['name']. '.' . $file['ftype']));
-            readfile($_SESSION['dirt']. '/' . $file['name']. '.' . $file['ftype']);
+            header('Content-Length: ' . filesize($_SESSION['dirt']. '\\' . $file['name']. '.' . $file['ftype']));
+            readfile($_SESSION['dirt']. '\\' . $file['name']. '.' . $file['ftype']);
 
             // Now update downloads count
             $newCount = $file['downloads'] + 1;
@@ -176,5 +182,43 @@
         else { 
             // create folder
             mkdir($_SESSION['dirt'] . '/' . $dirName); // Creates a folder in this directory named whatever value returned by pname input
+        }
+    }
+
+    if(isset($_POST['approve'])) {
+        $filID = $_POST['approve'];
+        $dateappr = date("Y-m-d");
+
+        $apprQuery = "UPDATE files SET dateappr = ?, state = 1 WHERE filID = ?";
+        $apprStmt = $conn->prepare($apprQuery);
+        $apprStmt->bind_param('si', $dateappr, $filID);
+        $apprStmt->execute();
+        header("Location: ../admin.php");
+
+    }
+
+    if(isset($_POST['decline'])) {
+        $filID = $_POST['decline'];
+
+        $selQuery = "SELECT name, ftype from files WHERE filID = ?";
+        $selStmt = $conn->prepare($selQuery);
+        $selStmt->bind_param('i', $filID);
+        $selStmt->execute();
+        $selRes = $selStmt->get_result();
+
+
+        $decQuery = "DELETE FROM files WHERE filID = ?";
+        $decStmt = $conn->prepare($decQuery);
+        $decStmt->bind_param('i', $filID);
+        $decStmt->execute();
+
+        $direct = $_SESSION['dirt'];
+        while($tow = $selRes->fetch_assoc()){
+            $name = $tow['name'].'.'.$tow['ftype'];
+
+            $delPath = '../'.$direct.'/'.$name;
+
+            unlink($delPath);
+            header("Location: ../admin.php");
         }
     }
