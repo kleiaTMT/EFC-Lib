@@ -46,7 +46,7 @@
                         $finformat = number_format($formatted, 2, '.', ',');
                         echo '
                             <tr>
-                                <form action="./modular/filesLogic.php" method="POST">
+                                <form method="POST">
                                     <td>
                                         <button type="submit" id="appro" value="'.$row["filID"].'" name="approve" class="btn btn-sm btn-success">✓</button>
                                         <button type="submit" id="decli" value="'.$row["filID"].'" name="decline" class="btn btn-sm btn-danger">✕</button>  

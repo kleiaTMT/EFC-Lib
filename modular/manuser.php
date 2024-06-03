@@ -48,6 +48,7 @@
 ?>
 <input class="search" type="text" id="myInput" onkeyup="myFilter()" placeholder="Search for user's names..." />
 
+<!-- ADD ACCOUNT BUTTON + MODAL -->
 <button type="button" class="btn btn-primary search btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
     Add Account
 </button>
@@ -104,6 +105,7 @@
         </div>
     </div>
 </div>
+
 <table id="myTable">
     <thead class="sticky-top">
         <th width="5%">Action</th>
@@ -120,62 +122,85 @@
             while ($row = $jres->fetch_assoc()) {  ?>
                 <tr>
                     <td>
-                        <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editUser">✎</button>
-                        <div class="modal fade" id="editUser" tabindex="-1" aria-labelledby="editUserLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
+                        <!--EDIT USER BUTTON AND MODAL-->
+                        <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editUser<?php echo $row['uid']?>">✎</button>
+                        <div class="modal fade" id="editUser<?php echo $row['uid']?>" tabindex="-1" aria-labelledby="editUserLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-default modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h1 class="modal-title fs-5" id="editUserLabel">Edit User</h1>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body">
-                                        <label>User ID:</label>
-                                        <input type="text" disabled>
-                                        <label>Email:</label>
-                                        <input type="text" disabled>
-                                        <label>Name:</label>
-                                        <input type="text">
-                                        <label>Company/Branch</label>
-                                        <select>
-                                            <?php
-                                                foreach($dre as $fire){?>
-                                                    <option value="<?php echo $fire; ?>"><?php echo $fire; ?></option>
-                                                <?php }
-                                            ?>
-                                        </select>
-                                        <label>Account Type:</label>
-                                        <select>
-                                            <?php
-                                            foreach ($ddre as $fired){
-                                                switch($fired) {
-                                                    case "2":?>
-                                                        <option value="Admin">Admin</option><?php
-                                                        break;
-                                                    case "1":?>
-                                                        <option value="Independent">Independent</option><?php
-                                                        break;
-                                                    default:?>
-                                                        <option value="Regular" selected>Regular</option><?php
-                                                }
-                                            }
-                                            ?>
-                                        </select>
-                                        <label>Change Password:</label>
-                                        <input type="checkbox" id="chngpw">
-                                        <label>New Password:</label>
-                                        <input type="password" id="pwtest" disabled>
-                                        <label>Confirm Password:</label>
-                                        <input type="password" id="pwtest" disabled>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary">Save changes</button>
-                                    </div>
+                                    <form method="POST">
+                                        <div class="modal-body" id="editUserModal">
+                                                <input type="hidden" name="uid" value="<?php echo $row['uid'] ?>">
+                                            <label>Email:</label>
+                                                <input type="text" name="emailAddr" value="<?php echo $row['emailAddr'] ?>">
+                                            <label>Name:</label>
+                                                <input type="text" name="uname" value="<?php echo $row['uname'] ?>">
+                                            <label>Company/Branch:</label>
+                                                <select name="company" id="company">
+                                                    <?php
+                                                        foreach($dre as $fire){
+                                                            if($row['company'] == $fire){?>
+                                                                <option value="<?php echo $fire; ?>" selected><?php echo $fire; ?></option> <?php
+                                                            } else { ?>
+                                                                <option value="<?php echo $fire; ?>"><?php echo $fire; ?></option><?php 
+                                                            }
+                                                        }
+                                                    ?>
+                                                </select><br>
+                                            <label>Account Type:</label>
+                                                <select name="usertype" id="usertype">
+                                                    <?php
+                                                        foreach($ddre as $utype){
+                                                            if($row['usertype'] == $utype){?>
+                                                                <option value="<?php echo $utype; ?>" selected> <?php
+                                                                    switch($utype) {
+                                                                        case '0':
+                                                                            echo 'Regular';
+                                                                            break;
+                                                                        case '1':
+                                                                            echo 'Independent';
+                                                                            break;
+                                                                        case '2':
+                                                                            echo 'Admin';
+                                                                            break;
+                                                                    }?>
+                                                                </option> <?php
+                                                            } else { ?>
+                                                                <option value="<?php echo $utype; ?>"><?php
+                                                                    switch($utype) {
+                                                                        case '0':
+                                                                            echo 'Regular';
+                                                                            break;
+                                                                        case '1':
+                                                                            echo 'Independent';
+                                                                            break;
+                                                                        case '2':
+                                                                            echo 'Admin';
+                                                                            break;
+                                                                    }?>
+                                                                </option><?php 
+                                                            }
+                                                        }
+                                                    ?>
+                                                </select><br>
+                                            <label>New Password:</label>
+                                                <input type="password" name="newpass">
+                                            <label>Confirm Password:</label>
+                                                <input type="password" name="cnewpass">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" value="edittrue" name="edittrue" class="btn btn-primary">Save</button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </td>
-                    <td><b><?php echo $row["uid"]; ?></b></td>
+                    <td style="text-align:center"><b><?php echo $row["uid"]; ?></b></td>
                     <td><b><?php echo $row["emailAddr"]; ?></b></td>
                     <td><b><?php echo $row["uname"]; ?></b></td>
                     <td><b><?php echo $row["company"]; ?></b></td>
@@ -191,8 +216,8 @@
                                 echo 'Regular';
                         } ?>
                     </b></td>
-                    <td><?php echo $row["datecreate"]; ?></td>
-                    <td>
+                    <td><b><?php echo $row["datecreate"]; ?></b></td>
+                    <td><b>
                         <?php 
                             if($row["lastdate"] == "0000-00-00"){
                                 echo 'No visits yet..';
@@ -200,7 +225,7 @@
                                 echo $row["lastdate"];
                             }
                         ?>
-                    </td>
+                    </b></td>
                 </tr> <?php
             }
         ?>
@@ -288,8 +313,8 @@
     }
 
     document.getElementById('chngpw').onchange = function() {
-            document.getElementById('pwtest').disabled = !this.checked;
-        };
+        document.getElementById('pwtest').disabled = !this.checked;
+    };
 </script>
 <style>
     .modal-dialog-scrollable {

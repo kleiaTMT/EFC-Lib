@@ -8,29 +8,34 @@
     $tvQ = $conn->prepare($tvQuery);
     $tvQ->execute();
     $tvQres = $tvQ->get_result();
-    while ($row = $tvQres->fetch_assoc()) {
-      $newPoints = array("y" => $row['numvisits'], "label" => $row['lastvisit']);
-      array_push($dataPoints, $newPoints);
-    }
 
 ?>
-<script>
-  window.onload = function () {
-    var chart = new CanvasJS.Chart("chartContainer", {
-      title: {
-      text: "Total Website Visits"
-      },
-      axisY: {
-        title: "Number of Unique Visits"
-      },
-      data: [{
-        type: "line",
-        dataPoints: <?php echo json_encode($dataPoints, JSON_NUMERIC_CHECK); ?>
-      }]
-    });
-    chart.render();
- }
-</script>
+<!--Load the AJAX API-->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Dates', 'Total Visits'],
+          <?php 
+            while ($row = $tvQres->fetch_assoc()) {
+              echo "['".$row['lastvisit']."', ".$row['numvisits']."],";
+            }
+          ?>
+        ]);
+
+        var options = {
+          title: 'Number of Unique Visits',
+          legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+        chart.draw(data, options);
+      }
+    </script>
 <div class="flex-container">
   <div class="card" style="width: 20rem;">
     <div class="card-body">
@@ -91,16 +96,9 @@
 </div>
 <div class="grphs">
   <div class="vst">
-    <div id="chartContainer" style="height: 370px; width: 80%;"></div>
-    <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
   </div>
   <div class="chrts">
-    <div class="piechrts">
-
-    </div>
-    <div class="piechrts">
-      
-    </div>
+  <div id="curve_chart" style="width: 90%; height: 500px"></div>
   </div>
 </div>
 <style>

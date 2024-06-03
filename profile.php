@@ -1,5 +1,8 @@
 <?php 
-    include "filesLogic.php";
+    include "./modular/filesLogic.php";
+
+
+
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -11,13 +14,35 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="scripts.js"></script>
     </head>
-    <body>
-        <div class="profile-card">
-            <div>
-                
+    <body class="profile-card">
+        <?php include './modular/navbar.php'; ?>
+        <div>
+            <div class="prof-info">
+                <table class="prof-table">
+                    <tr>
+                        <td>Name</td>
+                        <td><?php echo $_SESSION['uname'];?></td>
+                    </tr>
+                    <tr>
+                        <td>Email Address</td>
+                        <td><?php echo $_SESSION['emailAddr'];?></td>
+                    </tr>
+                    <tr>
+                        <td>Company/Branch</td>
+                        <td><?php echo $_SESSION['company'];?></td>
+                    </tr>
+                    <tr>
+                        <td>Last Visit</td>
+                        <td><?php echo $_SESSION['lastdate'];?></td>
+                    </tr>
+                    <tr>
+                        <td>Date Created</td>
+                        <td><?php echo $_SESSION['datecreate'];?></td>
+                    </tr>
+                </table>
             </div>
-            <div>
-
+            <div class="prof-btns">
+                <button type="button" class="btn btn-primary">Change Password</button>
             </div>
         </div>
     </body>

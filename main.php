@@ -1,7 +1,9 @@
 <?php
   include './modular/filesLogic.php';
   include './modular/logreq.php';
-  $_SESSION['dirt'] = "uploads";
+  if(empty($_SESSION['dirt'])){
+    $_SESSION['dirt'] = "uploads";
+  }
   if($_SESSION['uid'] == ''){
     header("Location: ./index.php?error=UNAUTHORIZED_ACCESS");
   }
@@ -69,14 +71,6 @@
             <li id="<?php echo $dira;?>"><?php echo $dira;?></li>
           <?php } ?>
         </ul>
-        <?php if($_SESSION['utype'] == '2') { ?>
-          <!-- Adding a folder form // Connects to filesLogic.php when the button is clicked --> 
-          <h3>Add Folder</h3>
-          <form method="POST">
-            <input type="text" id="pname" name="pname" placeholder="Enter the name">
-            <input type="submit" class="button" value="Next">
-          </form>
-        <?php } ?>
       </div>
 
       <!-- Div for the right panel (list of files) -->

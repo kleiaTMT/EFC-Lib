@@ -1,7 +1,13 @@
 <html>
     <style>
-        .nav-link{
+        .nav-link {
             text-wrap: nowrap;
+        }
+        .navbar-brand {
+            margin-left: 35px;
+        }
+        .navbar-nav {
+            margin-right: 15px;
         }
     </style>
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #ffffff;">
@@ -13,8 +19,8 @@
         <div class="collapse navbar-collapse " id="navbarText">
             <ul class="navbar-nav mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Profile</a>
-                </li>
+                    <a class="nav-link" href="./profile.php">Profile</a>
+                </li> 
                 <?php
                     if($_SESSION['utype'] == '2'){
                         echo '<li class="nav-item">

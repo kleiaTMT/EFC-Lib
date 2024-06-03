@@ -27,11 +27,11 @@
         $uploader = $_SESSION['uname'];
         $dateup = date("Y-m-d");
 
-        $sqql = "SELECT * FROM files WHERE name='$fnamewoext' AND ftype='$extension' AND dirGroup='$journey'";
+        $sqql = "SELECT * FROM files WHERE name='$fnamewoext' AND ftype='$extension'";
         $check = mysqli_query($conn, $sqql);
 
         // Condition for allowing specific types of files to be uploaded
-        if (!in_array($extension, ['zip', 'pdf', 'docx', 'ppt', 'jpg', 'png', 'jpeg', 'xlsx'])) {
+        if (!in_array($extension, ['zip', 'pdf', 'docx', 'ppt', 'jpg', 'png', 'jpeg', 'xlsx', 'txt'])) {
             echo "
                 <div class='alert alert-danger alert-dismissible fade show fixed-top' role='alert'>
                     You file extension must be .zip, .pdf, .docx, .ppt, .jpg/jpeg, .png, or .xlsx.
@@ -104,7 +104,11 @@
         $result = $stat->get_result();
         $file = $result->fetch_assoc();
         
-        $filepath = $_SESSION['dirt']. '\\' . $file['name']. '.' . $file['ftype'];
+        if($_SESSION['dirt'] != "uploads"){
+            $filepath = '.\uploads\\'.$_SESSION['dirt']. '\\' . $file['name']. '.' . $file['ftype'];
+        } else { 
+            $filepath = '.\\'.$_SESSION['dirt']. '\\' . $file['name']. '.' . $file['ftype'];
+        }
 
         switch ($file['ftype']) {
             case "pdf": $ctype="application/pdf"; break;
@@ -127,8 +131,8 @@
             header('Expires: 0');
             header('Cache-Control: must-revalidate');
             header('Pragma: public');
-            header('Content-Length: ' . filesize($_SESSION['dirt']. '\\' . $file['name']. '.' . $file['ftype']));
-            readfile($_SESSION['dirt']. '\\' . $file['name']. '.' . $file['ftype']);
+            header('Content-Length: ' . filesize($filepath));
+            readfile($filepath);
 
             // Now update downloads count
             $newCount = $file['downloads'] + 1;
@@ -193,7 +197,14 @@
         $apprStmt = $conn->prepare($apprQuery);
         $apprStmt->bind_param('si', $dateappr, $filID);
         $apprStmt->execute();
-        header("Location: ../admin.php");
+        echo "
+            <div class='alert alert-success alert-dismissible fade show fixed-top' role='alert'>
+                File approved!
+                <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'>
+                    <span aria-hidden='true'>&times;</span>
+                </button>
+            </div>
+        ";
 
     }
 
@@ -221,4 +232,105 @@
             unlink($delPath);
             header("Location: ../admin.php");
         }
+    }
+
+    if(isset($_POST['editfiles'])){
+        $filID = $_POST['fileID'];
+        $newdGroup = $_POST['dgroup'];
+        $newstat = $_POST['hidden'];
+        $base = $_SERVER['DOCUMENT_ROOT'];
+
+        if(!empty($_POST['newfname'])){
+            $newfname = $_POST['newfname'];
+            
+            $edQuery = "SELECT name FROM files WHERE name = ?";
+            $edstm = $conn->prepare($edQuery);
+            $edstm->bind_param("s", $newfname);
+            $edstm->execute();
+            $edres = $edstm->get_result();
+
+            $pdQuery = "SELECT name, dirGroup, ftype FROM files WHERE filID = ?";
+            $pdstm = $conn->prepare($pdQuery);
+            $pdstm->bind_param("i", $filID);
+            $pdstm->execute();
+            $pdres = $pdstm->get_result();
+            
+            // CHECKS IF FILE NAME ALREADY EXISTS
+            if (mysqli_num_rows($edres) > 0){
+                echo "
+                    <div class='alert alert-danger alert-dismissible fade show fixed-top' role='alert'>
+                        File name already exists.
+                        <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'>
+                            <span aria-hidden='true'>&times;</span>
+                        </button>
+                    </div>
+                ";
+                header("Location: ../admin.php?error=File already exists");
+            } else {
+                while($set = $pdres->fetch_assoc()) {
+                    // CHECKS IF THE FILE WAS MOVED
+                    if($set['dirGroup'] != $newdGroup) {
+                        if($newdGroup == "uploads"){
+                            echo 1;
+                            rename($base."\\"."uploads\\".$set['dirGroup']."\\".$set['name'].'.'.$set['ftype'], $base."\\".$newdGroup."\\".$newfname.'.'.$set['ftype']);
+                        } elseif ($set['dirGroup'] == "uploads"){
+                            echo 2;
+                            rename($base."\\".$set['dirGroup']."\\".$set['name'].'.'.$set['ftype'], $base."\\"."uploads\\".$newdGroup."\\".$newfname.'.'.$set['ftype']);
+                        } else {
+                            echo 3;
+                            rename($base."\\"."uploads\\".$set['dirGroup']."\\".$set['name'].'.'.$set['ftype'], $base."\\"."uploads\\".$newdGroup."\\".$newfname.'.'.$set['ftype']);
+                        }
+                    } else {
+                        if($set['dirGroup'] == "uploads") {
+                            echo 4;
+                            rename($base."\\".$set['dirGroup']."\\".$set['name'].'.'.$set['ftype'], $base."\\".$set['dirGroup']."\\".$newfname.'.'.$set['ftype']);
+                        } else {
+                            echo 5;
+                            rename($base."\\"."uploads\\".$set['dirGroup']."\\".$set['name'].'.'.$set['ftype'], $base."\\"."uploads\\".$set['dirGroup']."\\".$newfname.'.'.$set['ftype']);
+                        }
+                    }
+                }
+                echo 6;
+                $upQuery = "UPDATE files SET name = ?, dirGroup = ?, hidden = ? WHERE filID = ?";
+                $upStm = $conn->prepare($upQuery);
+                $upStm->bind_param("ssii", $newfname, $newdGroup, $newstat, $filID);
+            }
+        } else {
+            $mQuery = "SELECT dirGroup, name, ftype FROM files WHERE filID = ?";
+            $mstm = $conn->prepare($mQuery);
+            $mstm->bind_param("i", $filID);
+            $mstm->execute();
+            $mres = $mstm->get_result();
+            while($oops = $mres->fetch_assoc()) {
+                if($oops['dirGroup'] != $newdGroup) {
+                    if($newdGroup == "uploads"){
+                        rename($base."\\"."uploads\\".$oops['dirGroup']."\\".$oops['name'].'.'.$oops['ftype'], $base."\\".$newdGroup."\\".$oops['name'].'.'.$oops['ftype']);
+                    } elseif ($oops['dirGroup'] == "uploads"){
+                        rename($base."\\".$oops['dirGroup']."\\".$oops['name'].'.'.$oops['ftype'], $base."\\"."uploads\\".$newdGroup."\\".$oops['name'].'.'.$oops['ftype']);
+                    } else {
+                        rename($base."\\"."uploads\\".$oops['dirGroup']."\\".$oops['name'].'.'.$oops['ftype'], $base."\\"."uploads\\".$newdGroup."\\".$oops['name'].'.'.$oops['ftype']);
+                    }
+                } else {
+                    if($oops['dirGroup'] == "uploads") {
+                        rename($base."\\".$oops['dirGroup']."\\".$oops['name'].'.'.$oops['ftype'], $base."\\".$oops['dirGroup']."\\".$oops['name'].'.'.$oops['ftype']);
+                    } else {
+                        rename($base."\\"."uploads\\".$oops['dirGroup']."\\".$oops['name'].'.'.$oops['ftype'], $base."\\"."uploads\\".$oops['dirGroup']."\\".$oops['name'].'.'.$oops['ftype']);
+                    }
+                }
+            }
+
+
+            $upQuery = "UPDATE files SET dirGroup = ?, hidden = ? WHERE filID = ?";
+            $upStm = $conn->prepare($upQuery);
+            $upStm->bind_param("sii", $newdGroup, $newstat, $filID);
+        }
+        $upStm->execute();
+        echo "
+            <div class='alert alert-success alert-dismissible fade show fixed-top' role='alert'>
+                File updated successfully!
+                <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'>
+                    <span aria-hidden='true'>&times;</span>
+                </button>
+            </div>
+        ";
     }

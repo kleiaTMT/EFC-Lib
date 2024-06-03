@@ -71,7 +71,7 @@
                     <p>
                         Request for 
                         <a href="https://it-helpdesk-ecofoods.on.spiceworks.com/portal">
-                            support?
+                            support
                         </a>
                     </p>
                 </div>

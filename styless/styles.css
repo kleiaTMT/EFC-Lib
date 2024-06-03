@@ -85,9 +85,28 @@ th{
 tr:nth-child(odd) {
   background-color: #f2f2f2
 }
+.float-child h2{
+  margin-left: 20px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
 
 ul, #myUL {
   list-style-type: none;
+}
+
+#myUL li{
+  margin-left: 30px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+#myUL li:before {
+  content: "➤ ";
+}
+
+#myUL li:hover{
+  cursor: pointer;
 }
 
 .sign-out { 
@@ -103,51 +122,43 @@ ul, #myUL {
   margin: 0;
   padding: 0;
 }
-
-/* Style the caret/arrow */
-.caret {
-  cursor: pointer;
-  user-select: none; /* Prevent text selection */
-}
-
 .navbar img{
   cursor: pointer;
 }
-
-/* Create the caret/arrow with a unicode, and style it */
-.caret::before {
-  content: "\25B6";
-  color: black;
-  display: inline-block;
-  margin-right: 6px;
-}
-
-/* Rotate the caret/arrow icon when clicked on (using JavaScript) */
-.caret-down::before {
-  transform: rotate(90deg);
-}
-
-/* Hide the nested list */
-.nested {
-  display: none;
-}
-
-/* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
-.active {
-  display: block;
-}
-.leftlabel{
-  display:inline;
+.leftlabel {
+  margin-bottom: 20px;
 }
 .leftlabel label{
-  position: relative;
+  display: inline;
+  margin-bottom: 6px;
   float: left;
-  margin-bottom: 5%;
   width: 30%;
 }
-.leftlabel input{
-  
-  float: right;
-  margin-bottom: 1.5%;
+.leftlabel input, select{
+  display: block;
   width: 70%;
+  margin-bottom: 5px;
+}
+#editUserModal label{
+  display: inline-block;
+  width: 30%;
+}
+#editUserModal input, select{
+  display: inline-block;
+  width: 70%;
+  margin-bottom: 5px;
+}
+#editUserModal input, select::after {
+  content: "\a";
+}
+
+.profile-card{
+  background-color: #f6eece;
+}
+.prof-info {
+  width: 50vw;
+  float: left;
+}
+.prof-table {
+  background-color: white;
 }

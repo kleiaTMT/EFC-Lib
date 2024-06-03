@@ -9,6 +9,7 @@
     if($_SESSION['utype'] != "2"){
         header("Location: ./main.php?error=UNAUTHORIZED_ACCESS");
     }
+
 ?>
 
 <!doctype HTML>
@@ -39,6 +40,10 @@
             position: relative;
             border-left: 4px solid #ef0000;
             overflow-y: auto;
+            background-image: url("./assets/folders-opa5.png");
+            background-position: center;
+            background-size: 30vw;
+            background-repeat: no-repeat;
         }
         .modal{
             z-index: 50000;
@@ -57,7 +62,7 @@
     </style>
     <script>
         $(document).ready(function() {
-            $('#myLogos img').click(function() {
+            $('#myLogos').on('click', 'img', function(event) {
                 let seleID = $(this).attr('id');
                 console.log(seleID);
                 $('#replaceThis').load("./modular/replaceThis.php", {

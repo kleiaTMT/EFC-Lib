@@ -7,7 +7,7 @@
     }
     global $conn;
     $start = 0;
-    $perpage = 10;
+    $perpage = 8;
 
     if(isset($_GET['page'])){
         $page = $_GET['page'];
@@ -45,12 +45,12 @@
     <!-- Table headers with sortable headers -->
     <table class="overflow" id="myTable2">
         <thead class="sticky-top">
-            <th>Action</th>
-            <th class="sorta" onclick="sortTable(1)">Name</th>
-            <th class="sorta" onclick="sortTable(2)">Type</th>
-            <th class="sorta" onclick="sortTable(3)">Date Uploaded</th>
-            <th>Size (in KB)</th>
-            <th>Downloads</th>
+            <th width="10%">Action</th>
+            <th width="40%" class="sorta" onclick="sortTable(1)">Name</th>
+            <th width="10%" class="sorta" onclick="sortTable(2)">Type</th>
+            <th width="15%" class="sorta" onclick="sortTable(3)">Date Uploaded</th>
+            <th width="15%">Size (in KB)</th>
+            <th width="10%">Downloads</th>
         </thead>
         <!-- Table body for list of files -->
         <tbody id="conTent">
@@ -58,9 +58,43 @@
                 while ($row = $hres->fetch_assoc()) {  
                     echo "
                         <tr>
-                            <td width=10%><a href='main.php?file_id=".$row['filID']."'>Download</a></td>
+                            <td width=10%><a class='btn btn-sm btn-success'href='main.php?file_id=".$row['filID']."'><img width='23' src='../assets/download.png'/></a></td>
                             <td width=50%><b>".$row['name']."</b></td>
-                            <td>".$row['ftype']."</td>
+                            <td>";
+                                switch($row['ftype']){
+                                    case "pdf": 
+                                        echo "PDF"; 
+                                        break;
+                                    case "exe": 
+                                        echo "executable";
+                                        break;
+                                    case "zip": 
+                                        echo "Compressed"; 
+                                        break;
+                                    case "docx": 
+                                        echo "Word"; 
+                                        break;
+                                    case "xlsx": 
+                                        echo "Excel"; 
+                                        break;
+                                    case "ppt": 
+                                        echo "Powerpoint"; 
+                                        break;
+                                    case "gif": 
+                                        echo "GIF"; 
+                                        break;
+                                    case "png": 
+                                        echo "PNG"; 
+                                        break;
+                                    case "jpeg":
+                                    case "jpg": 
+                                        echo "JPG"; 
+                                        break;
+                                    case "txt":
+                                        echo "TEXT";
+                                        break;
+                                }
+                            echo "</td>
                             <td>".$row['dateup']."</td>
                             <td>".floor($row['size'] / 1000) . ' KB'."</td>
                             <td>".$row['downloads']."</td>

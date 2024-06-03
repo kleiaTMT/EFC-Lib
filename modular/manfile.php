@@ -8,7 +8,7 @@
         $page = $_GET['page'];
     } else
         $page = 1;
-
+    $root = $_SERVER['DOCUMENT_ROOT'];
     $start_from = ($page-1) * $perpage ;
 
     $jQuery = "SELECT * FROM files WHERE state = 1 ORDER BY filID LIMIT ?, ?";
@@ -29,32 +29,50 @@
     $mstm = $conn->prepare($mQuery);
     $mstm->execute();
     $mres = $mstm->get_result();
-    $dir = array();
+    
+    $directory = $_SERVER['DOCUMENT_ROOT'] . "\uploads\\";
 
-    while($opt = $mres->fetch_assoc()){
-        array_push($dir, $opt['dirGroup']);
+    $directs = scandir($directory);
+    unset($directs[array_search('.', $directs, true)]);
+    unset($directs[array_search('..', $directs, true)]);
+    $dir = array("uploads");
+
+    foreach($directs as $direc){
+        if(is_dir($directory . $direc)) {
+            array_push($dir, $direc);
+        }
     }
-
+    //require "scanfiles.php";
     ?>
     <body id="myBody">
         <input class="search" type="text" id="myInput" onkeyup="myFilter()" placeholder="Search for file names..." />
 
         <!-- Uploading a file in the database and the pc system // Connects to filesLogic.php when the button is clicked -->
-        <form class="upsload" action="admin.php" method="post" enctype="multipart/form-data" >
-            <button class="btn btn-sm btn-primary" type="submit" name="save">UPLOAD</button>    
-            <input type="file" name="myfile">    
-        </form>
+        <div class="upfile">
+            <form class="upsload" action="admin.php" method="post" enctype="multipart/form-data" >
+                <button class="btn btn-sm btn-primary" type="submit" name="save">UPLOAD</button>    
+                <input type="file" name="myfile">    
+            </form>
+        </div>
+
+        <!-- Adding a folder form // Connects to filesLogic.php when the button is clicked --> 
+        <div class="addfile">
+            <form class="upsload" method="POST">
+                <input type="text" id="pname" name="pname" placeholder="Add folder directory">
+                <input type="submit" class="btn btn-sm btn-primary" value="ADD">
+            </form>
+        </div>
 
         <table id="myTable">
             <thead class="sticky-top">
-                <th width="8%">Action</th>
+                <th width="5%">Action</th>
                 <th width="6%">File ID</th>
                 <th width="35%">Name</th>
                 <th width="6%">Location</th>
                 <th width="14%">Uploader</th>
-                <th width="11%">Date Approved</th>
-                <th width="8%">Size</th>
-                <th width="9%">Downloads</th>
+                <th width="11%">Date Uploaded</th>
+                <th width="9%">Size</th>
+                <th width="8%">Downloads</th>
                 <th width="4%">Hidden?</th>
             </thead>    
             <tbody>
@@ -62,29 +80,35 @@
                     while ($row = $jres->fetch_assoc()){
                         $formatted = $row['size'] / 1000;
                         $finformat = number_format($formatted, 2, '.', ',');
-                        $ifrm = '../'.$row['dirGroup'].'/'.$row['name'].'.'.$row['ftype'];
+                        if($row['dirGroup'] == "uploads") {
+                            $ifrm = $root.'\\'.$row['dirGroup'].'\\'.$row['name'].'.'.$row['ftype'];
+                        } else {
+                            $ifrm = $root.'\uploads\\'.$row['dirGroup'].'\\'.$row['name'].'.'.$row['ftype'];
+                        }
                         ?>
                             <tr>
                                 <td> 
+                                    <!--MODAL FOR EDITING FILE FORM-->
                                     <button type="button" id="edit" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editFile<?php echo $row['filID']?>">✎</button>
-                                    <div class="modal fade" id="editFile<?php echo $row['filID']?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                    <div class="modal fade" id="editFile<?php echo $row['filID']?>" tabindex="-1" aria-labelledby="editFileForm<?php echo $row['filID']?>" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
-                                                <form action="filesLogic.php" method="POST">
+                                                <form method="POST">
                                                     <div class="modal-header">
-                                                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit File Form</h1>
+                                                        <h1 class="modal-title fs-5" id="editFileForm"<?php echo $row['filID']?>>Edit File Form</h1>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <div class="leftlabel">
-                                                            <label>File ID:</label><br>
-                                                                <input type="text" name="" value="<?php echo $row['filID'];?>" disabled>
-                                                            <label>Name:</label><br>
-                                                                <input type="text" name="" value="<?php echo $row['name'].'.'.$row['ftype'];?>" disabled>
+                                                                <input type="hidden" name="fileID" value="<?php echo $row['filID'];?>">
+                                                            <label>Name:</label>
+                                                                <input type="text" name="fname" value="<?php echo $row['name'].'.'.$row['ftype'];?>" disabled>
+                                                            <label>New File Name:</label>
+                                                                <input type="text" name="newfname" placeholder="New File Name"/>
                                                             <label>Uploader:</label>
-                                                                <input type="text" name="" value="<?php echo $row['uname'];?>" disabled>
+                                                                <input type="text" name="uploader" value="<?php echo $row['uname'];?>" disabled>
                                                             <label>Folder Loc:</label>
-                                                                <select name="" id="">
+                                                                <select name="dgroup" id="dgroup">
                                                                     <?php
                                                                         foreach ($dir as $dira){ ?>
                                                                             <option value="<?php echo $dira;?>"><?php echo $dira;?></option> <?php
@@ -92,9 +116,9 @@
                                                                     ?>
                                                                 </select>
                                                             <label>File Size:</label>
-                                                                <input type="text" name="" value="<?php echo $finformat.' KB';?>" disabled>
+                                                                <input type="text" name="fsize" value="<?php echo $finformat.' KB';?>" disabled>
                                                             <label>Date of Approval:</label>
-                                                                <input type="text" name="" value="<?php echo $row['dateup'];?>" disabled>
+                                                                <input type="text" name="dateappr" value="<?php echo $row['dateappr'];?>" disabled>
                                                             <label>File Status:</label>
                                                                 <select name="hidden" id="hidden">
                                                                     <?php 
@@ -107,67 +131,56 @@
                                                                         }
                                                                     ?>
                                                                 </select>
-                                                            <label>Edit File Name:</label>
-                                                                <input type="checkbox" id="yourBox" /> <br>
-                                                            <label>New File Name:</label>
-                                                                <input type="text" id="yourText" disabled />
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                        <button type="button" class="btn btn-primary">Save</button>
+                                                        <button type="submit" class="btn btn-primary" name="editfiles">Save</button>
                                                     </div>
                                                 </form>
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="button" id="view" class="btn btn-sm btn-primary"  data-bs-toggle="modal" data-bs-target="#viewfile">👁️</button>
-                                    <div class="modal fade" id="viewfile" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="exampleModalLabel"><?php echo $row['name'];?></h1>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="button" class="btn btn-primary">Save changes</button>
-                                            </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </td>
-                                <td>
+                                <td style="text-align:center">
                                     <b><?php echo $row["filID"]; ?></b>
                                 </td>
                                 <td>
                                     <b><?php echo $row['name'].'.'.$row["ftype"]; ?></b>
                                 </td>
                                 <td>
-                                    <?php echo $row["dirGroup"];?>
+                                    <b>
+                                        <?php echo $row["dirGroup"];?>
                                 </td>
                                 <td>
-                                    <?php echo $row["uname"]; ?>
+                                    <b>
+                                        <?php echo $row["uname"]; ?>
+                                    </b>
+                                </td>
+                                <td style="text-align:center">
+                                    <b>
+                                        <?php echo $row["dateup"]; ?>
+                                    </b>
                                 </td>
                                 <td>
-                                    <?php echo $row["dateup"]; ?>
+                                    <b>
+                                        <?php echo $finformat.' KB'; ?>
+                                    </b>
                                 </td>
-                                <td>
-                                    <?php echo $finformat.' KB'; ?>
-                                </td>
-                                <td>
-                                    <?php echo $row["downloads"]; ?>
+                                <td style="text-align:center">
+                                    <b>
+                                        <?php echo $row["downloads"]; ?>
+                                    </b>
                                 </td>    
-                                <td>
-                                    <?php
-                                    if ($row['hidden'] == 0)
-                                        echo 'No';
-                                    else 
-                                        echo 'Yes';
-                                    ?>
+                                <td style="text-align:center">
+                                    <b>
+                                        <?php
+                                            if ($row['hidden'] == 0)
+                                                echo 'No';
+                                            else 
+                                                echo 'Yes';
+                                        ?>
+                                    </b>
                                 </td>
                             </tr>
                         <?php
@@ -199,10 +212,6 @@
                 }
             }
         }
-
-        document.getElementById('yourBox').onchange = function() {
-            document.getElementById('yourText').disabled = !this.checked;
-        };
 
     </script>
 

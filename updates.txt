@@ -35,7 +35,7 @@ Divide contents of files/users into pages
 Display edit user and files forms (not yet tied to backend for process of editing)
 Approve or decline upload requests
 Register users
-Encode user passwords using sha1() function
+Encode user's passwords using sha1() function
 Display dashboard with total users, files, downloads, and pending requests
 line graph of total website vists (needs fixing)
 Logout
