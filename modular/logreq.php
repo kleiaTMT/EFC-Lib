@@ -6,7 +6,7 @@
     $passw = '';
     $enc = "EFC";
     
-    
+    //PROCESSES REQUEST FOR LOGGING IN
     if(isset($_POST["login"])) {
 
         $emailAddr = $_POST['emailAddr'];
@@ -68,6 +68,7 @@
         }
     }
 
+    //PROCESS FOR ADDING AN ACCOUNT
     if(isset($_POST["signup"])) {
         $emailAddr = $_POST['emailAddr'];
         $uname = $_POST['uname'];
@@ -109,12 +110,14 @@
         }
     }
 
+    //PROCESS FOR LOGGING OUT
     if(isset($_POST['logout'])) {
         session_unset();
         session_destroy();
         header('Location: ../index.php');
     }
 
+    //PROCESS FOR EDITING AN EXISTING ACCOUNT
     if(isset($_POST['edittrue'])) {
         $euid = $_POST['uid'];
         $name = $_POST['uname'];
@@ -147,4 +150,56 @@
                 </button>
             </div>
         ";
+    }
+
+    //PROCESS FOR CHANGING THE PASSWORD OF A REGULAR USER
+    if(isset($_POST['changePass'])) {
+        $uid = $_SESSION['uid'];
+        $oldPW = $_POST['oldpw'];
+        $newPW = $_POST['newpw'];
+        $renewPW = $_POST['renewpw'];
+        $oldPW_enc = sha1($oldPW.$enc);
+
+        $chanQuery = "SELECT passw FROM users WHERE uid = ?";
+        $chanStm = $conn->prepare($chanQuery);
+        $chanStm->bind_param("s", $oldPW_enc);
+        $chanStm->execute();
+        $chanRes = $chanStm->get_result();
+
+        if(mysqli_num_rows($chanRes) > 0) {
+            if ($newPW === $renewPW) {
+                $finalPW = sha1($newPW.$enc);
+                $updaQuery = "UPDATE users SET passw = ? WHERE uid = ?";
+                $updaStm = $conn->prepare($updaQuery);
+                $updaStm->bind_param("si", $finalPW, $uid);
+                $updaStm->execute();
+                
+                echo "
+                    <div class='alert alert-success alert-dismissible fade show fixed-top' role='alert'>
+                        Password updated successfully!
+                        <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'>
+                            <span aria-hidden='true'>&times;</span>
+                        </button>
+                    </div>
+                ";
+            } else {
+                echo "
+                    <div class='alert alert-danger alert-dismissible fade show fixed-top' role='alert'>
+                        Passwords do not match.
+                        <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'>
+                            <span aria-hidden='true'>&times;</span>
+                        </button>
+                    </div>
+                ";
+            }
+        } else {
+            echo "
+                <div class='alert alert-danger alert-dismissible fade show fixed-top' role='alert'>
+                    Incorrect password!
+                    <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'>
+                        <span aria-hidden='true'>&times;</span>
+                    </button>
+                </div>
+            ";
+        }
     }

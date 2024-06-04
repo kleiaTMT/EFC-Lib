@@ -1,7 +1,12 @@
 <?php 
     include "./modular/filesLogic.php";
+    include "./modular/logreq.php";
 
-
+    $profQuery = "SELECT * FROM files WHERE uname = ?";
+    $profStm = $conn->prepare($profQuery);
+    $profStm->bind_param("s", $_SESSION['uname']);
+    $profStm->execute();
+    $profRes = $profStm->get_result();
 
 ?>
 <!DOCTYPE HTML>
@@ -13,37 +18,123 @@
         <link rel="stylesheet" href="./styless/styles.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="scripts.js"></script>
+        
     </head>
     <body class="profile-card">
         <?php include './modular/navbar.php'; ?>
         <div>
             <div class="prof-info">
-                <table class="prof-table">
-                    <tr>
-                        <td>Name</td>
-                        <td><?php echo $_SESSION['uname'];?></td>
-                    </tr>
-                    <tr>
-                        <td>Email Address</td>
-                        <td><?php echo $_SESSION['emailAddr'];?></td>
-                    </tr>
-                    <tr>
-                        <td>Company/Branch</td>
-                        <td><?php echo $_SESSION['company'];?></td>
-                    </tr>
-                    <tr>
-                        <td>Last Visit</td>
-                        <td><?php echo $_SESSION['lastdate'];?></td>
-                    </tr>
-                    <tr>
-                        <td>Date Created</td>
-                        <td><?php echo $_SESSION['datecreate'];?></td>
-                    </tr>
-                </table>
+                <div class="tabswtch">
+                    <button class="tablinks" onclick="openTab(event, 'Details')" id="defaultOpen">Details</button>
+                    <button class="tablinks" onclick="openTab(event, 'Uploads')">Uploads</button>
+                </div>
+                <div id="Details" class="prof-info-content">
+                    <table class="prof-table">
+                        <tr>
+                            <td>Name</td>
+                            <td><?php echo $_SESSION['uname'];?></td>
+                        </tr>
+                        <tr>
+                            <td>Email Address</td>
+                            <td><?php echo $_SESSION['emailAddr'];?></td>
+                        </tr>
+                        <tr>
+                            <td>Company/Branch</td>
+                            <td><?php echo $_SESSION['company'];?></td>
+                        </tr>
+                        <tr>
+                            <td>Last Visit</td>
+                            <td><?php echo $_SESSION['lastdate'];?></td>
+                        </tr>
+                        <tr>
+                            <td>Date Created</td>
+                            <td><?php echo $_SESSION['datecreate'];?></td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="Uploads" class="prof-info-content">
+                    <table class="prof-uploads">
+                        <thead class="sticky-top">
+                            <th>File Name</th>
+                            <th>Type</th>
+                            <th>Location</th>
+                            <th>Size</th>
+                            <th>Date Approved</th>
+                            <th>Date Uploaded</th>
+                        </thead>
+                        <tbody><?php 
+                            while($row = $profRes->fetch_assoc()){ 
+                                $formatted = $row['size'] / 1000;
+                                $finformat = number_format($formatted, 2, '.', ',');?> 
+                                <tr>
+                                    <td><?php echo $row['name']; ?> </td>
+                                    <td><?php echo $row['ftype']; ?> </td>
+                                    <td><?php echo $row['dirGroup']; ?> </td>
+                                    <td><?php echo $finformat.' KB'; ?> </td>
+                                    <td><?php echo $row['dateappr']; ?> </td>
+                                    <td><?php echo $row['dateup']; ?> </td>
+                                </tr><?php
+                            }?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div class="prof-btns">
-                <button type="button" class="btn btn-primary">Change Password</button>
+                <div class="prof-holder"></div>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#changePW">Change Password</button>
+                <div class="modal fade" id="changePW" tabindex="-1" aria-labelledby="changePWLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-sm">
+                        <form method="POST">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="changePWLabel">Change Password Form</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <label for="oldpw">Old Password</label>
+                                        <input type="password" name="oldpw">
+                                    <label for="newpw">New Password</label>
+                                        <input type="password" name="newpw">
+                                    <label for="renewpw">Confirm Password</label>
+                                        <input type="password" name="renewpw">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" name="changePass" class="btn btn-primary">Change Password</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary">View Documentation</button>
             </div>
         </div>
     </body>
+    <script>
+        function openTab(evt, tabName) {
+            // Declare all variables
+            var i, tabcontent, tablinks;
+
+            // Get all elements with class="tabcontent" and hide them
+            tabcontent = document.getElementsByClassName("prof-info-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+
+            // Get all elements with class="tablinks" and remove the class "active"
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+
+            // Show the current tab, and add an "active" class to the button that opened the tab
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+
+        }
+        // Get the element with id="defaultOpen" and click on it
+        document.getElementById("defaultOpen").click();
+    </script>
+    <footer>
+    </footer>
 </html>

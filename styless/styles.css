@@ -156,9 +156,78 @@ ul, #myUL {
   background-color: #f6eece;
 }
 .prof-info {
-  width: 50vw;
+  width: 70vw;
+  height: 67.5vh;
+  overflow-y: auto;
   float: left;
+  background-color: white;
+  padding-bottom: 30px;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 10px;
+  margin: 30px;
+  border-radius: 12.5px;
+  border:1px solid black;
+}
+.prof-info button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  margin-bottom: 10px;
+}
+.prof-info button.active {
+  background-color: #ccc;
+}
+.prof-info-content {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
 }
 .prof-table {
   background-color: white;
+}
+.prof-uploads {
+  overflow-y: hidden; 
+}
+.prof-btns {
+  margin-right: 30px;
+  margin-top: 120px;
+  width: 22vw;
+  position: relative;
+  height: 320px;
+  float: right; 
+  background-color: white;
+  padding: 20px;
+  padding-top: 150px;
+  text-align: center;
+  border-radius: 12.5px;
+  border:1px solid black;
+}
+.prof-holder {
+  position:absolute;
+  height:200px;
+  width:200px;
+  border-radius:50%;
+  border:1px solid black;
+  margin-left:-25px;
+  bottom: 65.8%;
+  left: 25%;
+  background:white;
+}
+.prof-holder img {
+  object-fit: contain;
+  height: 100%;
+  width: 100%;
+}
+.prof-btns button {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+.prof-btns label {
+  display: block;
 }

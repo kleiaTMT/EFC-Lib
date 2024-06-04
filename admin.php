@@ -1,5 +1,6 @@
 <?php
     include "./modular/filesLogic.php";
+    include './modular/logreq.php';
     @session_start();
 
     if(empty($_SESSION['admain'])) {
@@ -61,6 +62,7 @@
         }
     </style>
     <script>
+        //jQuery for loading different tabs
         $(document).ready(function() {
             $('#myLogos').on('click', 'img', function(event) {
                 let seleID = $(this).attr('id');
