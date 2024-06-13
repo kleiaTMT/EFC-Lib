@@ -13,6 +13,7 @@
 <html>
     <head>
         <title>Profile Page</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="./styless/styles.css">
@@ -53,7 +54,8 @@
                     </table>
                 </div>
                 <div id="Uploads" class="prof-info-content">
-                    <table class="prof-uploads">
+                    <input class="search" type="text" id="myInput" onkeyup="myFilter()" placeholder="Search for file names..." />
+                    <table id="myTable4" class="prof-uploads">
                         <thead class="sticky-top">
                             <th>File Name</th>
                             <th>Type</th>
@@ -134,6 +136,28 @@
         }
         // Get the element with id="defaultOpen" and click on it
         document.getElementById("defaultOpen").click();
+
+        function myFilter() {
+        // Declare variables
+          var input, filter, table, tr, td, i, txtValue;
+          input = document.getElementById("myInput");
+          filter = input.value.toUpperCase();
+          table = document.getElementById("myTable4");
+          tr = table.getElementsByTagName("tr");
+
+          // Loop through all table rows, and hide those who don't match the search query
+          for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+              txtValue = td.textContent || td.innerText;
+              if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+              } else {
+                tr[i].style.display = "none";
+              }
+            }
+          }
+        }
     </script>
     <footer>
     </footer>

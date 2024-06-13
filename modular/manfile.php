@@ -8,7 +8,7 @@
         $page = $_GET['page'];
     } else
         $page = 1;
-    $root = $_SERVER['DOCUMENT_ROOT'];
+    $root = "C:\\xampp\htdocs\\testBS";//$_SERVER['DOCUMENT_ROOT'];
     $start_from = ($page-1) * $perpage ;
 
     $jQuery = "SELECT * FROM files WHERE state = 1 ORDER BY filID LIMIT ?, ?";
@@ -30,7 +30,7 @@
     $mstm->execute();
     $mres = $mstm->get_result();
     
-    $directory = $_SERVER['DOCUMENT_ROOT'] . "\uploads\\";
+    $directory = $root . "\uploads\\";
 
     $directs = scandir($directory);
     unset($directs[array_search('.', $directs, true)]);
@@ -151,6 +151,7 @@
                                 <td>
                                     <b>
                                         <?php echo $row["dirGroup"];?>
+                                    </b>
                                 </td>
                                 <td>
                                     <b>

@@ -37,7 +37,7 @@
       }
     </script>
 <div class="flex-container">
-  <div class="card" style="width: 20rem;">
+  <div class="card text-bg-secondary" style="width: 20rem;">
     <div class="card-body">
       <h5 class="card-title">Registered Users: </h5>
       <hr>
@@ -51,7 +51,7 @@
     ?>
     </div>
   </div>
-  <div class="card" style="width: 20rem;">
+  <div class="card text-bg-primary" style="width: 20rem;">
     <div class="card-body">
       <h5 class="card-title">Uploaded File Count: </h5>
       <hr>
@@ -65,7 +65,7 @@
       ?>
     </div>
   </div>
-  <div class="card" style="width: 20rem;">
+  <div class="card text-bg-success" style="width: 20rem;">
     <div class="card-body">
       <h5 class="card-title">Downloads Made: </h5>
       <hr>
@@ -79,7 +79,7 @@
       ?>
     </div>
   </div>
-  <div class="card" style="width: 20rem;">
+  <div class="card text-bg-danger" style="width: 20rem;">
     <div class="card-body">
       <h5 class="card-title">Pending Requests: </h5>
       <hr>
@@ -98,7 +98,7 @@
   <div class="vst">
   </div>
   <div class="chrts">
-  <div id="curve_chart" style="width: 90%; height: 500px"></div>
+    <div id="curve_chart" style="width: 90%; height: 500px"></div>
   </div>
 </div>
 <style>

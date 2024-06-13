@@ -238,7 +238,7 @@
         $filID = $_POST['fileID'];
         $newdGroup = $_POST['dgroup'];
         $newstat = $_POST['hidden'];
-        $base = $_SERVER['DOCUMENT_ROOT'];
+        $base = "C:\\xampp\htdocs\\testBS";
 
         if(!empty($_POST['newfname'])){
             $newfname = $_POST['newfname'];

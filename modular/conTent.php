@@ -16,6 +16,11 @@
 
     $start_from = ($page-1) * $perpage ;
 
+    if(empty($_SERVER['SERVER_ADDR'])){
+        $ipadd = "localhost";
+    } else {
+        $ipadd = $_SERVER['SERVER_ADDR'];
+    }
     // QUERY FOR FILTERING BETWEEN DIRECTORIES, HIDDEN, AND APPROVED FILES
     $hQuery = "SELECT * FROM files WHERE dirGroup=? AND hidden=0 AND state=1 ORDER BY name LIMIT ?, ?";
     $hstm = $conn->prepare($hQuery);
@@ -58,7 +63,7 @@
                 while ($row = $hres->fetch_assoc()) {  
                     echo "
                         <tr>
-                            <td width=10%><a class='btn btn-sm btn-success'href='main.php?file_id=".$row['filID']."'><img width='23' src='../assets/download.png'/></a></td>
+                            <td width=10%><a class='btn btn-sm btn-success'href='main.php?file_id=".$row['filID']."'><img width='23' src='http://".$ipadd."/testBS/assets/download.png'/></a></td>
                             <td width=50%><b>".$row['name']."</b></td>
                             <td>";
                                 switch($row['ftype']){
@@ -105,4 +110,5 @@
         </tbody>
     </table>
     <?php include_once "pagination.php"; ?>
+
 </div>

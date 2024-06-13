@@ -160,9 +160,9 @@
         $renewPW = $_POST['renewpw'];
         $oldPW_enc = sha1($oldPW.$enc);
 
-        $chanQuery = "SELECT passw FROM users WHERE uid = ?";
+        $chanQuery = "SELECT passw FROM users WHERE uid = ? and passw = ?";
         $chanStm = $conn->prepare($chanQuery);
-        $chanStm->bind_param("s", $oldPW_enc);
+        $chanStm->bind_param("is", $uid, $oldPW_enc);
         $chanStm->execute();
         $chanRes = $chanStm->get_result();
 
